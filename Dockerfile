@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /var/www/assessment_app
 
 # Copy existing application directory contents
 COPY . .
@@ -20,7 +20,7 @@ COPY . .
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/assessment_app/storage /var/www/assessment_app/bootstrap/cache
 
 EXPOSE 9000
 CMD ["php-fpm"]
