@@ -24,4 +24,5 @@ chmod -R 775 /var/www/assessment_app/storage/framework/sessions
 chmod -R 775 /var/www/assessment_app/storage/framework/views
 chmod -R 775 /var/www/assessment_app/storage/framework/cache
 
+
 echo "Permissions have been fixed."
