@@ -19,8 +19,11 @@ COPY . .
 # Install Laravel dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/assessment_app/storage /var/www/assessment_app/bootstrap/cache
+# Set permissions - ensure www-data has full access to storage and cache
+RUN chown -R www-data:www-data /var/www/assessment_app/storage /var/www/assessment_app/bootstrap/cache && \
+    chmod -R 775 /var/www/assessment_app/storage /var/www/assessment_app/bootstrap/cache && \
+    find /var/www/assessment_app/storage -type d -exec chmod 775 {} \; && \
+    find /var/www/assessment_app/storage -type f -exec chmod 664 {} \;
 
 EXPOSE 9000
 CMD ["php-fpm"]
