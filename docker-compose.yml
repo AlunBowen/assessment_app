@@ -1,52 +1,41 @@
-version: '3.8'
-
+version: "3.9"
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: laravel-app
-    restart: unless-stopped
-    working_dir: /var/www/html
+    working_dir: /var/www/assessment_app
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/assessment_app   # syncs code
+      - ./storage:/var/www/assessment_app/storage
+      - ./vendor:/var/www/assessment_app/vendor
+      - ./env_prod/.env:/var/www/assessment_app/.env:ro   # keeps .env safe
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     networks:
-      - laravel
-
-  web:
-    image: nginx:alpine
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/var/www/html
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-    networks:
-      - laravel
+      - laravel-network
 
   db:
-    image: mysql:8
-    container_name: mysql
-    restart: unless-stopped
+    image: mysql:8.0
+    container_name: laravel-db
+    restart: always
     environment:
-      MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: laravel
       MYSQL_USER: laravel
       MYSQL_PASSWORD: secret
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
     networks:
-      - laravel
-
-networks:
-  laravel:
+      - laravel-network
 
 volumes:
   db_data:
+
+networks:
+  laravel-network:
